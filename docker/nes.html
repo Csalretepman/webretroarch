@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>NES игры</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .game { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>NES Игры</h1>
+    <div id="games">Загрузка...</div>
+
+    <script>
+        fetch('/roms/')
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const links = Array.from(doc.querySelectorAll('a'))
+                    .map(a => a.getAttribute('href'))
+                    .filter(href => href && href.endsWith('.nes'));
+
+                const container = document.getElementById('games');
+                container.innerHTML = '';
+                links.forEach(filename => {
+                    const link = document.createElement('a');
+                    link.href = `/webretro/?core=nestopia&rom=/roms/${filename}`;
+                    link.target = '_blank';
+                    link.textContent = filename.replace(/\.nes$/, '');
+                    const div = document.createElement('div');
+                    div.className = 'game';
+                    div.appendChild(link);
+                    container.appendChild(div);
+                });
+            });
+    </script>
+</body>
+</html>

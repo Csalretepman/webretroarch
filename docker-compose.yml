@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  webretro:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ./roms:/var/www/html/roms
+      - ./webretro:/var/www/html
+    ports:
+      - "80:80"
+    restart: unless-stopped
